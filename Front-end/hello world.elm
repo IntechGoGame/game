@@ -3,7 +3,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Decode as Decode
-
+import Debug
 
 
 main =
@@ -31,7 +31,16 @@ init myRequest =
   , httpRequest myRequest
   )
 
+type CardName  = String
+  
+type alias Card =
+ { 
+   name : CardName   
+ }
 
+cardList : List String
+cardList =
+    [ "a", "b", "c", "d", "e", "f","a", "b", "c", "d", "e", "f" ]
 
 -- UPDATE
 
@@ -62,26 +71,9 @@ view : Model -> Html Msg
 view model =
 
  table [style [("border","2px solid black")]]
-        [ tr []
-            [ th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            , th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            , th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            ]
-        ,
-         tr []
-            [ th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            , th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            , th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            ]
-        
-        , tr []
-            [ th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            , th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            , th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "."]
-            ]
-        ]
-    
-
+  (List.map (\l ->  th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text l]
+      ) cardList)
+  
 
 
 -- SUBSCRIPTIONS
