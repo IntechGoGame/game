@@ -64,15 +64,92 @@ var _user$project$Main$cardList = {
 };
 var _user$project$Main$Model = F2(
 	function (a, b) {
-		return {myRequest: a, gifUrl: b};
+		return {myRequest: a, flipCard: b};
 	});
 var _user$project$Main$Card = function (a) {
 	return {name: a};
 };
 var _user$project$Main$String = {ctor: 'String'};
+var _user$project$Main$SelectCard = function (a) {
+	return {ctor: 'SelectCard', _0: a};
+};
+var _user$project$Main$cardView2 = F2(
+	function (index, cardList) {
+		return A2(
+			_elm_lang$html$Html$th,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(
+					_user$project$Main$SelectCard(index)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'height', _1: '50px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'width', _1: '50px'},
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('?'),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Main$cardView1 = _elm_lang$core$List$indexedMap(_user$project$Main$cardView2);
+var _user$project$Main$cardView0 = _user$project$Main$cardView1(_user$project$Main$cardList);
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$table,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'border', _1: '2px solid black'},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		_user$project$Main$cardView0);
+};
 var _user$project$Main$NewGif = function (a) {
 	return {ctor: 'NewGif', _0: a};
 };
+var _user$project$Main$flipCardFx = F2(
+	function (index, flipCard) {
+		var url = 'http://google.com';
+		var indexLog = _elm_lang$core$Basics$toString(index);
+		return A4(
+			_elm_lang$core$Debug$log,
+			indexLog,
+			_elm_lang$http$Http$send,
+			_user$project$Main$NewGif,
+			_elm_lang$http$Http$request(
+				{
+					method: 'GET',
+					url: url,
+					headers: {
+						ctor: '::',
+						_0: A2(_elm_lang$http$Http$header, 'Access-Control-Allow-Origin', 'access-control-allow-origin'),
+						_1: {ctor: '[]'}
+					},
+					body: _elm_lang$http$Http$emptyBody,
+					expect: _elm_lang$http$Http$expectJson(_user$project$Main$decodeGifUrl),
+					timeout: _elm_lang$core$Maybe$Nothing,
+					withCredentials: false
+				}));
+	});
 var _user$project$Main$httpRequest = function (myRequest) {
 	var url = 'https://wikipedia.org';
 	return A2(
@@ -103,73 +180,31 @@ var _user$project$Main$init = function (myRequest) {
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		if (_p0.ctor === 'ChooseTile') {
-			return {
-				ctor: '_Tuple2',
-				_0: model,
-				_1: _user$project$Main$httpRequest(model.myRequest)
-			};
-		} else {
-			if (_p0._0.ctor === 'Ok') {
+		switch (_p0.ctor) {
+			case 'ChooseTile':
 				return {
 					ctor: '_Tuple2',
-					_0: A2(_user$project$Main$Model, model.myRequest, _p0._0._0),
-					_1: _elm_lang$core$Platform_Cmd$none
+					_0: model,
+					_1: _user$project$Main$httpRequest(model.myRequest)
 				};
-			} else {
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			}
+			case 'NewGif':
+				if (_p0._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Main$Model, model.myRequest, _p0._0._0),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A2(_user$project$Main$flipCardFx, _p0._0, model.flipCard)
+				};
 		}
 	});
-var _user$project$Main$ChooseTile = {ctor: 'ChooseTile'};
-var _user$project$Main$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$table,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$style(
-				{
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'border', _1: '2px solid black'},
-					_1: {ctor: '[]'}
-				}),
-			_1: {ctor: '[]'}
-		},
-		A2(
-			_elm_lang$core$List$map,
-			function (l) {
-				return A2(
-					_elm_lang$html$Html$th,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ChooseTile),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$style(
-								{
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
-									_1: {
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'height', _1: '50px'},
-										_1: {
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'width', _1: '50px'},
-											_1: {ctor: '[]'}
-										}
-									}
-								}),
-							_1: {ctor: '[]'}
-						}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(l),
-						_1: {ctor: '[]'}
-					});
-			},
-			_user$project$Main$cardList));
-};
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{
 		init: _user$project$Main$init('cats'),
@@ -177,3 +212,4 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 		update: _user$project$Main$update,
 		subscriptions: _user$project$Main$subscriptions
 	})();
+var _user$project$Main$ChooseTile = {ctor: 'ChooseTile'};
