@@ -1,9 +1,10 @@
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Array exposing (..)
 import Http
 import Json.Decode as Decode
-import Debug
+import Debug exposing (..)
 
 
 main =
@@ -20,8 +21,8 @@ main =
 
 
 type alias Model =
-  { myRequest : String
-  , gifUrl : String
+  { myRequest : String,
+  flipCard : String
   }
 
 
@@ -37,7 +38,8 @@ type alias Card =
  { 
    name : CardName   
  }
-
+  
+ 
 cardList : List String
 cardList =
     [ "a", "b", "c", "d", "e", "f","a", "b", "c", "d", "e", "f" ]
@@ -48,6 +50,7 @@ cardList =
 type Msg
   = ChooseTile
   | NewGif (Result Http.Error String)
+  | SelectCard(Int)
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -62,6 +65,9 @@ update msg model =
     NewGif (Err _) ->
       (model, Cmd.none)
 
+    SelectCard(index) ->
+
+  (model, flipCardFx index model.flipCard) 
 
 
 -- VIEW
@@ -69,13 +75,20 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-
  table [style [("border","2px solid black")]]
-  (List.map (\l ->  th [onClick ChooseTile, style [("cursor", "pointer"),("height","50px"),("width","50px")]][text l]
-      ) cardList)
+                 (cardView0)
+ 
+cardView0 : List (Html Msg)
+cardView0 = cardView1 cardList
+
+cardView1 :  List String  -> List (Html Msg)
+cardView1 = List.indexedMap(cardView2)
   
-
-
+cardView2 : Int -> a -> Html Msg
+cardView2 index cardList = th [onClick (SelectCard index), style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "?"]
+      
+  
+  
 -- SUBSCRIPTIONS
 
 
@@ -83,8 +96,28 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
+-- FUNCTION 
 
+flipCardFx : Int -> String -> Cmd Msg 
+flipCardFx index flipCard  = 
+  let 
+   indexLog = toString (index)   
+   url = "http://google.com" 
+ in 
+    log indexLog 
+    Http.send NewGif (Http.request{
+  method = "GET",
+ url = url,
+    headers = [Http.header "Access-Control-Allow-Origin" "access-control-allow-origin"],
+ body = Http.emptyBody,
+    expect = Http.expectJson decodeGifUrl,
+ timeout = Nothing, withCredentials = False
+  })
+  
 
+  
+ 
+ 
 -- HTTP
 
 
