@@ -8,20 +8,33 @@ type Game = {
     maxScore : int
 }
 
+type Couple = {
+    IdA : int
+    IdB : int
+}
+
 module Db =
 
     // GAME INITIALIZATION
-    let startNewGame =
-        // Creating new game
-        let myGame = { scorePlayer1 = 0; scorePlayer2 = 0; maxScore = 5 }
-            
-        // Building couples
-        let coupleStorage = new Dictionary<int, int>()
-        coupleStorage.Add(0,1)
-        coupleStorage.Add(2,3)
-        coupleStorage.Add(4,5)
-        "GAME INITIALIZED !"
+    let coupleStorage = new List<Couple>()
+    let myGame = { scorePlayer1 = 0; scorePlayer2 = 0; maxScore = 5 }
+
+    // GENERATE ALL COUPLES AND SORT A NEW RANDOM SET FOR FRONT
+    let newCouplesSet nbC maxVal =
+        let coupleSorted = new List<Couple>()
+        let randomGen = new System.Random()
+        for int in nbC do 
+            let couple = {IdA = randomGen.Next(maxVal); IdB = randomGen.Next(maxVal)}
+            coupleStorage.Add(couple)
+            coupleSorted.Add(couple)
+        // ORDER ASCENDING YET TO IMPLEMENT
+        coupleSorted
+
 
     // TEST IF TUPLE IS CORRECT OR NOT
     let isCorrect (a, b) =
-        
+        let temp = {IdA = a; IdB = b}
+        let temp2 = {IdA = b; IdB = a}
+        if coupleStorage.Contains(temp) || coupleStorage.Contains(temp2) then
+            true
+        else false
