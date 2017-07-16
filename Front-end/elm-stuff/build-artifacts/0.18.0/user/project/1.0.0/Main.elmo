@@ -13,42 +13,100 @@ var _user$project$Main$decodeGifUrl = A2(
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
-var _user$project$Main$cardList = {
-	ctor: '::',
-	_0: 'a',
-	_1: {
+var _user$project$Main$cardList = _elm_lang$core$Array$fromList(
+	{
 		ctor: '::',
-		_0: 'b',
+		_0: 'a',
 		_1: {
 			ctor: '::',
-			_0: 'c',
+			_0: 'b',
 			_1: {
 				ctor: '::',
-				_0: 'd',
+				_0: 'c',
 				_1: {
 					ctor: '::',
-					_0: 'e',
+					_0: 'd',
 					_1: {
 						ctor: '::',
-						_0: 'f',
+						_0: 'e',
 						_1: {
 							ctor: '::',
-							_0: 'a',
+							_0: 'f',
 							_1: {
 								ctor: '::',
-								_0: 'b',
+								_0: 'a',
 								_1: {
 									ctor: '::',
-									_0: 'c',
+									_0: 'b',
 									_1: {
 										ctor: '::',
-										_0: 'd',
+										_0: 'c',
 										_1: {
 											ctor: '::',
-											_0: 'e',
+											_0: 'd',
 											_1: {
 												ctor: '::',
-												_0: 'f',
+												_0: 'e',
+												_1: {
+													ctor: '::',
+													_0: 'f',
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {myRequest: a, flipCard: b};
+	});
+var _user$project$Main$Card = F3(
+	function (a, b, c) {
+		return {name: a, index: b, isVisible: c};
+	});
+var _user$project$Main$cardListTest = {
+	ctor: '::',
+	_0: A3(_user$project$Main$Card, 'a', 1, false),
+	_1: {
+		ctor: '::',
+		_0: A3(_user$project$Main$Card, 'b', 2, false),
+		_1: {
+			ctor: '::',
+			_0: A3(_user$project$Main$Card, 'c', 3, false),
+			_1: {
+				ctor: '::',
+				_0: A3(_user$project$Main$Card, 'd', 4, false),
+				_1: {
+					ctor: '::',
+					_0: A3(_user$project$Main$Card, 'e', 5, false),
+					_1: {
+						ctor: '::',
+						_0: A3(_user$project$Main$Card, 'f', 6, false),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$Main$Card, 'a', 7, false),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$Main$Card, 'b', 8, false),
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$Main$Card, 'c', 9, false),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$Card, 'd', 10, false),
+										_1: {
+											ctor: '::',
+											_0: A3(_user$project$Main$Card, 'e', 11, false),
+											_1: {
+												ctor: '::',
+												_0: A3(_user$project$Main$Card, 'f', 12, false),
 												_1: {ctor: '[]'}
 											}
 										}
@@ -62,19 +120,17 @@ var _user$project$Main$cardList = {
 		}
 	}
 };
-var _user$project$Main$Model = F2(
-	function (a, b) {
-		return {myRequest: a, flipCard: b};
-	});
-var _user$project$Main$Card = function (a) {
-	return {name: a};
+var _user$project$Main$defaultCardContent = function (index) {
+	return _elm_lang$core$Basics$toString(
+		_elm_lang$core$List$head(
+			A2(_elm_lang$core$List$drop, index, _user$project$Main$cardListTest)));
 };
 var _user$project$Main$String = {ctor: 'String'};
 var _user$project$Main$SelectCard = function (a) {
 	return {ctor: 'SelectCard', _0: a};
 };
-var _user$project$Main$cardView2 = F2(
-	function (index, cardList) {
+var _user$project$Main$defaultCardView2 = F2(
+	function (index, cardListTest) {
 		return A2(
 			_elm_lang$html$Html$th,
 			{
@@ -102,12 +158,13 @@ var _user$project$Main$cardView2 = F2(
 			},
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html$text('?'),
+				_0: _elm_lang$html$Html$text(
+					_user$project$Main$defaultCardContent(index)),
 				_1: {ctor: '[]'}
 			});
 	});
-var _user$project$Main$cardView1 = _elm_lang$core$List$indexedMap(_user$project$Main$cardView2);
-var _user$project$Main$cardView0 = _user$project$Main$cardView1(_user$project$Main$cardList);
+var _user$project$Main$defaultCardView1 = _elm_lang$core$List$indexedMap(_user$project$Main$defaultCardView2);
+var _user$project$Main$defaultCardView0 = _user$project$Main$defaultCardView1(_user$project$Main$cardListTest);
 var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$table,
@@ -121,7 +178,7 @@ var _user$project$Main$view = function (model) {
 				}),
 			_1: {ctor: '[]'}
 		},
-		_user$project$Main$cardView0);
+		_user$project$Main$defaultCardView0);
 };
 var _user$project$Main$NewGif = function (a) {
 	return {ctor: 'NewGif', _0: a};
@@ -129,7 +186,8 @@ var _user$project$Main$NewGif = function (a) {
 var _user$project$Main$flipCardFx = F2(
 	function (index, flipCard) {
 		var url = 'http://google.com';
-		var indexLog = _elm_lang$core$Basics$toString(index);
+		var indexLog = _elm_lang$core$Basics$toString(
+			A2(_elm_lang$core$Array$get, index, _user$project$Main$cardList));
 		return A4(
 			_elm_lang$core$Debug$log,
 			indexLog,
