@@ -23,7 +23,7 @@ module Db =
     let newCouplesSet nbC maxVal =
         let coupleSorted = new List<Couple>()
         let randomGen = new System.Random()
-        for int in nbC do 
+        for int in [1..nbC] do 
             let couple = {IdA = randomGen.Next(maxVal); IdB = randomGen.Next(maxVal)}
             coupleStorage.Add(couple)
             coupleSorted.Add(couple)
