@@ -13,6 +13,9 @@ var _user$project$Main$decodeGifUrl = A2(
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
+var _user$project$Main$getIsVisible = function (card) {
+	return card.isVisible;
+};
 var _user$project$Main$cardList = _elm_lang$core$Array$fromList(
 	{
 		ctor: '::',
@@ -71,6 +74,15 @@ var _user$project$Main$Card = F3(
 	function (a, b, c) {
 		return {name: a, index: b, isVisible: c};
 	});
+var _user$project$Main$createCard0 = A3(_user$project$Main$Card, '-1', -1, false);
+var _user$project$Main$getCardFromMaybe = function (card) {
+	var _p0 = card;
+	if (_p0.ctor === 'Nothing') {
+		return _user$project$Main$createCard0;
+	} else {
+		return _p0._0;
+	}
+};
 var _user$project$Main$cardListTest = {
 	ctor: '::',
 	_0: A3(_user$project$Main$Card, 'a', 1, false),
@@ -124,6 +136,15 @@ var _user$project$Main$defaultCardContent = function (index) {
 	return _elm_lang$core$Basics$toString(
 		_elm_lang$core$List$head(
 			A2(_elm_lang$core$List$drop, index, _user$project$Main$cardListTest)));
+};
+var _user$project$Main$cardContent = function (index) {
+	return _elm_lang$core$Native_Utils.eq(
+		_user$project$Main$getIsVisible(
+			_user$project$Main$getCardFromMaybe(
+				_elm_lang$core$List$head(
+					A2(_elm_lang$core$List$drop, index, _user$project$Main$cardListTest)))),
+		true) ? _elm_lang$core$Basics$toString(
+		A2(_elm_lang$core$Array$get, index, _user$project$Main$cardList)) : '?';
 };
 var _user$project$Main$String = {ctor: 'String'};
 var _user$project$Main$SelectCard = function (a) {
@@ -180,17 +201,56 @@ var _user$project$Main$view = function (model) {
 		},
 		_user$project$Main$defaultCardView0);
 };
+var _user$project$Main$cardView2 = F2(
+	function (index, cardListTest) {
+		return A2(
+			_elm_lang$html$Html$th,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(
+					_user$project$Main$SelectCard(index)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'height', _1: '50px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'width', _1: '50px'},
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(
+					_user$project$Main$cardContent(index)),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Main$cardView1 = _elm_lang$core$List$indexedMap(_user$project$Main$cardView2);
+var _user$project$Main$cardView0 = _user$project$Main$cardView1(_user$project$Main$cardListTest);
 var _user$project$Main$NewGif = function (a) {
 	return {ctor: 'NewGif', _0: a};
 };
 var _user$project$Main$flipCardFx = F2(
 	function (index, flipCard) {
 		var url = 'http://google.com';
+		var cardContentLog = _user$project$Main$cardContent(index);
 		var indexLog = _elm_lang$core$Basics$toString(
 			A2(_elm_lang$core$Array$get, index, _user$project$Main$cardList));
-		return A4(
+		return A6(
 			_elm_lang$core$Debug$log,
 			indexLog,
+			_elm_lang$core$Debug$log,
+			cardContentLog,
 			_elm_lang$http$Http$send,
 			_user$project$Main$NewGif,
 			_elm_lang$http$Http$request(
@@ -237,8 +297,8 @@ var _user$project$Main$init = function (myRequest) {
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'ChooseTile':
 				return {
 					ctor: '_Tuple2',
@@ -246,10 +306,10 @@ var _user$project$Main$update = F2(
 					_1: _user$project$Main$httpRequest(model.myRequest)
 				};
 			case 'NewGif':
-				if (_p0._0.ctor === 'Ok') {
+				if (_p1._0.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A2(_user$project$Main$Model, model.myRequest, _p0._0._0),
+						_0: A2(_user$project$Main$Model, model.myRequest, _p1._0._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -259,7 +319,7 @@ var _user$project$Main$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: A2(_user$project$Main$flipCardFx, _p0._0, model.flipCard)
+					_1: A2(_user$project$Main$flipCardFx, _p1._0, model.flipCard)
 				};
 		}
 	});
