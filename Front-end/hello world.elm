@@ -36,13 +36,23 @@ type CardName  = String
   
 type alias Card =
  { 
-   name : CardName   
+   name : String,
+   index : Int,
+   isVisible : Bool   
  }
   
+createCard0 : Card 
+createCard0 = Card "-1" -1 False
+{-  
+createCard1 : String -> Int -> Bool -> Card
+createCard1 name index isVisible = Card(name index isVisible)
+  -}
+cardListTest : List Card
+cardListTest = [ Card "a" 1 False, Card "b" 2 False,  Card "c" 3 False, Card "d" 4 False,  Card "e" 5 False, Card "f" 6 False, 
+ Card "a" 7 False, Card "b" 8 False,  Card "c" 9 False, Card "d" 10 False,  Card "e" 11 False, Card "f" 12 False ]
  
-cardList : List String
-cardList =
-    [ "a", "b", "c", "d", "e", "f","a", "b", "c", "d", "e", "f" ]
+cardList : Array String
+cardList =  Array.fromList[ "a", "b", "c", "d", "e", "f","a", "b", "c", "d", "e", "f" ]
 
 -- UPDATE
 
@@ -51,7 +61,7 @@ type Msg
   = ChooseTile
   | NewGif (Result Http.Error String)
   | SelectCard(Int)
-
+{-  | UpdateCardList -}
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -66,9 +76,9 @@ update msg model =
       (model, Cmd.none)
 
     SelectCard(index) ->
-
-  (model, flipCardFx index model.flipCard) 
-
+      (model, flipCardFx index model.flipCard) 
+    
+    {- UpdateCardList -> (model, updateCardListFx0)  -}
 
 -- VIEW
 
@@ -76,18 +86,39 @@ update msg model =
 view : Model -> Html Msg
 view model =
  table [style [("border","2px solid black")]]
-                 (cardView0)
+                 (defaultCardView0)
  
-cardView0 : List (Html Msg)
-cardView0 = cardView1 cardList
+defaultCardView0 : List (Html Msg)
+defaultCardView0 = defaultCardView1 cardListTest
 
-cardView1 :  List String  -> List (Html Msg)
+defaultCardView1 :  List Card  -> List (Html Msg)
+defaultCardView1 = List.indexedMap(defaultCardView2)
+  
+defaultCardView2 : Int -> a -> Html Msg
+defaultCardView2 index cardListTest = th [onClick (SelectCard index), style [("cursor", "pointer"),("height","50px"),("width","50px")]][text (defaultCardContent index)]
+
+defaultCardContent : Int -> String
+defaultCardContent index = toString (List.head(List.drop index cardListTest))
+
+cardView0 : List (Html Msg)
+cardView0 = cardView1 cardListTest
+
+cardView1 :  List Card  -> List (Html Msg)
 cardView1 = List.indexedMap(cardView2)
   
 cardView2 : Int -> a -> Html Msg
-cardView2 index cardList = th [onClick (SelectCard index), style [("cursor", "pointer"),("height","50px"),("width","50px")]][text "?"]
-      
-  
+cardView2 index cardListTest = th [onClick (SelectCard index), style [("cursor", "pointer"),("height","50px"),("width","50px")]][text (cardContent index)]
+
+cardContent : Int -> String
+cardContent index = if (getIsVisible(getCardFromMaybe((List.head(List.drop index cardListTest)))) ==  True) then toString (Array.get index cardList) else "?"
+
+getCardFromMaybe : Maybe Card -> Card
+getCardFromMaybe card = case card of
+    Nothing -> createCard0
+    Just card -> card
+
+getIsVisible : Card -> Bool
+getIsVisible card = card.isVisible
   
 -- SUBSCRIPTIONS
 
@@ -101,10 +132,14 @@ subscriptions model =
 flipCardFx : Int -> String -> Cmd Msg 
 flipCardFx index flipCard  = 
   let 
-   indexLog = toString (index)   
+   indexLog = toString (Array.get index cardList )   
+   cardContentLog = cardContent index
    url = "http://google.com" 
  in 
     log indexLog 
+    log cardContentLog
+  {-  updateCardListFx0 cardListTest index
+-}
     Http.send NewGif (Http.request{
   method = "GET",
  url = url,
@@ -113,10 +148,17 @@ flipCardFx index flipCard  =
     expect = Http.expectJson decodeGifUrl,
  timeout = Nothing, withCredentials = False
   })
-  
 
+{-
+updateCardListFx0 : Cmd Msg  
+updateCardListFx0 = updateCardListFx1
   
- 
+updateCardListFx1 : Int -> Cmd Msg
+updateCardListFx1 index = updateCardListFx2 cardListTest index
+  
+updateCardListFx2 : List Card -> Int -> Cmd Msg
+updateCardListFx2 cardListTest index = List.map (\x -> ( if(x.index == index ) then x else x))  cardListTest 
+    -}
  
 -- HTTP
 
